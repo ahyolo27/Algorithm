@@ -1,6 +1,4 @@
 import java.io.*;
-import java.util.*;
-
 
 public class Main {
 
@@ -14,10 +12,7 @@ public class Main {
         if (n == 1) {
             System.out.println(0);
             return;
-        } else if (n == 2) {
-            System.out.println(1);
-            return;
-        } else if (n == 3) {
+        } else if (n == 2 || n == 3) {
             System.out.println(1);
             return;
         }
