@@ -4,12 +4,14 @@ import java.util.*;
 public class Main {
     static int N, M, ans[];
     static boolean isSelected[];
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
 
         input(); // 입력
         set(0);
 
+        System.out.println(sb);
     }
 
     static void input() throws IOException {
@@ -25,8 +27,8 @@ public class Main {
     static void set(int cnt) {
         if (cnt == M) {
             for (int i = 0; i < M; i++)
-                System.out.print(ans[i] + " ");
-            System.out.println();
+                sb.append(ans[i]).append(" ");
+            sb.append("\n");
             return;
         }
 
