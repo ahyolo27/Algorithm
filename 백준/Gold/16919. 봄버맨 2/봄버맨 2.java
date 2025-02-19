@@ -2,20 +2,24 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static int R, C, N, times;
+    static int R, C, N;
     static String map[][];
     static Queue<int[]> q = new LinkedList<>();
     static int dr[] = {-1, 0, 1, 0}, dc[] = {0, 1, 0, -1};
 
     public static void main(String[] args) throws IOException {
-        input();
-        set();
+        StringBuilder sb = new StringBuilder();
+
+        input(); // 입력
+        set(); // N에 따른 map 상태 setting
 
         for (int i = 0; i < R; i++) {
             for (int j = 0; j < C; j++)
-                System.out.print(map[i][j]);
-            System.out.println();
+                sb.append(map[i][j]);
+            sb.append("\n");
         }
+        
+        System.out.println(sb);
     }
 
     static void input() throws IOException {
@@ -26,7 +30,6 @@ public class Main {
         C = Integer.parseInt(st.nextToken());
         N = Integer.parseInt(st.nextToken());
         map = new String[R][C];
-        times = 2;
 
         for (int i = 0; i < R; i++)
             map[i] = br.readLine().split("");
