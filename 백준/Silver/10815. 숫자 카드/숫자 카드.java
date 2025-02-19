@@ -10,7 +10,7 @@ public class Main {
         input(); // 입력
 
         for (int i = 0; i < M; i++)
-            search(finds[i], 0, N - 1);
+            search(cards, finds[i], 0, N - 1);
 
         System.out.println(sb);
     }
@@ -35,7 +35,7 @@ public class Main {
             finds[i] = Integer.parseInt(st.nextToken());
     }
 
-    static void search(int n, int lo, int hi) {
+    static void search(int cards[], int n, int lo, int hi) {
 
         if (lo + 1 == hi || lo == hi) { // 끝까지 찾았을 때에
             if (cards[lo] == n || cards[hi] == n)
@@ -48,9 +48,9 @@ public class Main {
         int mid = (lo + hi) / 2;
 
         if (cards[mid] < n)
-            search(n, mid + 1, hi);
+            search(cards, n, mid + 1, hi);
         else if (cards[mid] > n)
-            search(n, lo, mid - 1);
+            search(cards, n, lo, mid - 1);
         else
             sb.append(1).append(" ");
     }
