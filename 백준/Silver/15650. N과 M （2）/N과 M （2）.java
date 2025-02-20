@@ -3,11 +3,14 @@ import java.util.*;
 
 public class Main {
     static int N, M, arr[];
+    static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
 
         input(); // 입력
         set(1, 0);
+
+        System.out.println(sb);
     }
 
     static void input() throws IOException {
@@ -22,8 +25,8 @@ public class Main {
     static void set(int start, int depth) {
         if (depth == M) {
             for (int i = 0; i < M; i++)
-                System.out.print(arr[i] + " ");
-            System.out.println();
+                sb.append(arr[i]).append(" ");
+            sb.append("\n");
             return;
         }
 
