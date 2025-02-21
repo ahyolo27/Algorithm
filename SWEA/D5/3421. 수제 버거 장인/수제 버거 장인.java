@@ -12,7 +12,7 @@ public class Solution {
         for (int t = 1; t <= T; t++) {
 
             input(); // 입력
-            count(0, new ArrayList<>()); // 부분집합 개수 세기
+            count(0, new HashSet<>()); // 부분집합 개수 세기
 
             System.out.println("#" + t + " " + cnt);
         }
@@ -30,12 +30,11 @@ public class Solution {
             st = new StringTokenizer(br.readLine());
             int a = Integer.parseInt(st.nextToken());
             int b = Integer.parseInt(st.nextToken());
-            if (!noList.contains(new int[]{a, b}) && !noList.contains(new int[]{b, a}))
-                noList.add(new int[]{a, b});
+            noList.add(new int[]{a, b});
         }
     }
 
-    static void count(int depth, ArrayList<Integer> list) {
+    static void count(int depth, Set<Integer> list) {
         if (depth == N) {
             if (check(list) && !list.isEmpty())
                 cnt++;
@@ -48,7 +47,7 @@ public class Solution {
         count(depth + 1, list);
     }
 
-    static boolean check(ArrayList<Integer> list) {
+    static boolean check(Set<Integer> list) {
         for (int i = 0; i < noList.size(); i++) {
             int a = noList.get(i)[0];
             int b = noList.get(i)[1];
