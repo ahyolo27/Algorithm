@@ -3,7 +3,6 @@ import java.io.*;
 
 public class Solution {
     static int TC, N, L, T[], K[], max;
-    static boolean isSelected[];
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) throws IOException {
@@ -12,7 +11,9 @@ public class Solution {
         for (int tc = 1; tc <= TC; tc++) {
 
             input(); // 입력
-            makeHamburger(0, 0, 0);
+
+            for (int i = 1; i <= N; i++)
+                makeHamburger(0, 0, 0, i);
 
             System.out.println("#" + tc + " " + max);
         }
@@ -25,7 +26,6 @@ public class Solution {
         L = Integer.parseInt(st.nextToken());
         T = new int[N];
         K = new int[N];
-        isSelected = new boolean[N];
         max = 0;
 
         for (int i = 0; i < N; i++) {
@@ -35,15 +35,14 @@ public class Solution {
         }
     }
 
-    static void makeHamburger(int depth, int sumT, int sumK) {
-        if (depth == N) {
+    static void makeHamburger(int idx, int sumT, int sumK, int r) {
+        if (r == 0) { // 다 뽑은 경우
             if (sumK <= L)
                 max = Math.max(max, sumT);
             return;
         }
 
-        if (sumK + K[depth] <= L)
-            makeHamburger(depth + 1, sumT + T[depth], sumK + K[depth]);
-        makeHamburger(depth + 1, sumT, sumK);
+        for (int i = idx; i < N; i++)
+            makeHamburger(i + 1, sumT + T[i], sumK + K[i], r - 1);
     }
 }
