@@ -2,7 +2,6 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static ArrayList<Integer> S = new ArrayList<>();
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -10,6 +9,7 @@ public class Main {
         StringBuilder sb = new StringBuilder();
 
         int M = Integer.parseInt(br.readLine());
+        int bit = 0;
 
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
@@ -18,40 +18,30 @@ public class Main {
             switch (s) {
                 case "add": {
                     int x = Integer.parseInt(st.nextToken());
-                    if (!S.contains(x))
-                        S.add(x);
+                    bit |= (1 << (x - 1));
                     break;
                 }
                 case "remove": {
                     int x = Integer.parseInt(st.nextToken());
-                    if (S.contains(x))
-                        S.remove((Integer) x);
+                    bit = bit & ~(1 << (x - 1));
                     break;
                 }
                 case "check": {
                     int x = Integer.parseInt(st.nextToken());
-                    if (S.contains(x))
-                        sb.append("1").append("\n");
-                    else
-                        sb.append("0").append("\n");
+                    sb.append((bit & (1 << (x - 1))) != 0 ? "1\n" : "0\n");
                     break;
                 }
                 case "toggle": {
                     int x = Integer.parseInt(st.nextToken());
-                    if (S.contains(x))
-                        S.remove((Integer) x);
-                    else
-                        S.add(x);
+                    bit ^= (1 << (x - 1));
                     break;
                 }
                 case "all": {
-                    S.clear();
-                    for (int j = 1; j <= 20; j++)
-                        S.add(j);
+                    bit |= (~0);
                     break;
                 }
                 default: // empty
-                    S.clear();
+                    bit &= 0;
             }
         }
 
