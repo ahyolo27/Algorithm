@@ -44,12 +44,9 @@ public class Solution {
     }
 
     static void move(int startR, int startC) {
-        boolean visited[][] = new boolean[N][N];
         int cnt = 1;
-
         Queue<Pos> q = new LinkedList<>();
         q.offer(new Pos(startR, startC));
-        visited[startR][startC] = true;
 
         while (!q.isEmpty()) {
             Pos p = q.poll();
@@ -57,10 +54,10 @@ public class Solution {
             for (int i = 0; i < 4; i++) {
                 int nr = p.r + dr[i];
                 int nc = p.c + dc[i];
-                if (check(nr, nc) && !visited[nr][nc] && map[p.r][p.c] + 1 == map[nr][nc]) {
-                    visited[nr][nc] = true;
+                if (check(nr, nc) && map[p.r][p.c] + 1 == map[nr][nc]) {
                     cnt++;
                     q.offer(new Pos(nr, nc));
+                    break;
                 }
             }
         }
