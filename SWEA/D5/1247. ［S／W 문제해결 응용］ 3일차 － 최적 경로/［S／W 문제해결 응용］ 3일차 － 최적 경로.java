@@ -43,6 +43,8 @@ public class Solution {
             min = Math.min(distance, min);
             return;
         }
+        if (distance > min) // min보다 커지면 어차피 더이상 볼 필요 없으므로 탐색 중단
+            return;
 
         for (int i = 0; i < N; i++) {
             if (!isSelected[i]) {
