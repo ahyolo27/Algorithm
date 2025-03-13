@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    static int N;
-    static long M, len[], left, right, maxH;
+    static int N, left, right, maxH;
+    static long M, len[];
 
     public static void main(String[] args) throws IOException {
 
@@ -26,7 +26,7 @@ public class Main {
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++) {
             len[i] = Integer.parseInt(st.nextToken());
-            right = Math.max(len[i], right);
+            right = (int) Math.max(len[i], right);
         }
     }
 
@@ -35,14 +35,19 @@ public class Main {
             long mid = (left + right) / 2;
 
             long sum = 0;
-            for (int i = 0; i < len.length; i++)
-                sum += Math.max((len[i] - mid), 0);
+            for (int i = 0; i < len.length; i++) {
+                if (len[i] > mid) { // 양수인 경우에만 sum
+                    sum += len[i] - mid;
+                    if (sum >= M) // 최소 조건 만족하면 loop 종료
+                        break;
+                }
+            }
 
             if (sum >= M) {
-                left = mid + 1;
-                maxH = Math.max(mid, maxH);
+                left = (int) mid + 1;
+                maxH = (int) Math.max(mid, maxH);
             } else
-                right = mid - 1;
+                right = (int) mid - 1;
         }
     }
 }
