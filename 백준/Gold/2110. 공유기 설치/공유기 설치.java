@@ -25,7 +25,8 @@ public class Main {
 
         Arrays.sort(home);
         left = 1;
-        right = 1000000001;
+        right = home[N - 1] - home[0];
+        ans = left;
     }
 
     static void set() {
