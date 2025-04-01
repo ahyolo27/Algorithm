@@ -1,84 +1,81 @@
-import java.util.*;
 import java.io.*;
-
+import java.util.*;
 
 public class Main {
-    static int N;
-    static int map[][], rupee[][];
+    static final int INF = Integer.MAX_VALUE;
+    static int N, map[][], rupees[][], ans;
     static boolean visited[][];
-    static BufferedReader br;
-    static PriorityQueue<Node> pq;
-    static int dr[] = {-1, 1, 0, 0};
-    static int dc[] = {0, 0, -1, 1};
+    static int dr[] = {-1, 0, 1, 0}, dc[] = {0, 1, 0, -1};
+    static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
+    static class Node {
+        int r, c, w;
 
-    static class Node implements Comparable<Node> {
-        int r, c; // 다음 노드
-        int weight; // 가중치
-
-        Node(int r, int c, int weight) {
+        Node(int r, int c, int w) {
             this.r = r;
             this.c = c;
-            this.weight = weight;
-        }
-
-        @Override
-        public int compareTo(Node node) {
-            return this.weight - node.weight;  // 가중치에 따른 오름차순 정렬(우선순위 큐의 기준도 됨)
+            this.w = w;
         }
     }
 
     public static void main(String[] args) throws IOException {
-        br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder();
+        int t = 1;
 
-        for (int t = 0; ; t++) {
-
+        while (true) {
             N = Integer.parseInt(br.readLine());
-            if (N == 0) return; // 프로그램 종료
+            if (N == 0) break;
 
             input(); // 입력
-            loseRupee(); // 도둑루피(잃는 루피의 양) 계산
-
-            System.out.println("Problem " + (t + 1) + ": " + rupee[N - 1][N - 1]);
+            dijkstra(); // 다익스트라 시작
+            sb.append("Problem ").append(t++).append(": ").append(ans).append("\n");
         }
+
+        System.out.println(sb);
     }
 
     static void input() throws IOException {
         StringTokenizer st;
 
-        map = new int[N][N];
+        ans = 0;
         visited = new boolean[N][N];
-        rupee = new int[N][N];
 
+        map = new int[N][N];
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
+            for (int j = 0; j < N; j++)
                 map[i][j] = Integer.parseInt(st.nextToken());
-                rupee[i][j] = Integer.MAX_VALUE; // 루피 초기화
-            }
         }
+
+        rupees = new int[N][N];
+        for (int i = 0; i < N; i++)
+            Arrays.fill(rupees[i], INF);
     }
 
-    static void loseRupee() {
-        pq = new PriorityQueue<>(); // 우선순위 큐
-        rupee[0][0] = map[0][0]; // 시작점 초기화
+    static void dijkstra() {
+        PriorityQueue<Node> pq = new PriorityQueue<>((o1, o2) -> o1.w - o2.w);
+        pq.add(new Node(0, 0, map[0][0]));
+        rupees[0][0] = map[0][0];
         visited[0][0] = true;
-
-        pq.offer(new Node(0, 0, map[0][0]));
 
         while (!pq.isEmpty()) {
             Node node = pq.poll();
-            int r = node.r;
-            int c = node.c;
+            visited[node.r][node.c] = true;
+
+            if (node.r == N - 1 && node.c == N - 1) { // 도착하면 종료
+                ans = rupees[node.r][node.c];
+                return;
+            }
 
             for (int i = 0; i < 4; i++) {
-                int nr = r + dr[i];
-                int nc = c + dc[i];
-                
+                int nr = node.r + dr[i];
+                int nc = node.c + dc[i];
+
                 if (check(nr, nc) && !visited[nr][nc]) {
-                    rupee[nr][nc] = Math.min(rupee[nr][nc], rupee[r][c] + map[nr][nc]);
-                    visited[nr][nc] = true;
-                    pq.offer(new Node(nr, nc, rupee[nr][nc]));
+                    if (rupees[nr][nc] > node.w + map[nr][nc]) {
+                        rupees[nr][nc] = node.w + map[nr][nc];
+                        pq.offer(new Node(nr, nc, rupees[nr][nc]));
+                    }
                 }
             }
         }
