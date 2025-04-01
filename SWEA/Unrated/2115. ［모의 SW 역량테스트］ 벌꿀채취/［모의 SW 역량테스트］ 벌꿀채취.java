@@ -3,7 +3,6 @@ import java.util.*;
 
 public class Solution {
     static int T, N, M, C, map[][], max, ans;
-    static boolean visited[][];
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
     public static void main(String[] args) throws IOException {
@@ -13,7 +12,7 @@ public class Solution {
         for (int t = 1; t <= T; t++) {
 
             input(); // 입력
-            selectPlace(0, 0, 0, 0, visited); // 벌꿀 채집 시작
+            selectPlace(0, 0, 0, 0); // 벌꿀 채집 시작
 
             sb.append("#").append(t).append(" ").append(ans).append("\n");
         }
@@ -28,7 +27,6 @@ public class Solution {
         C = Integer.parseInt(st.nextToken());
 
         map = new int[N][N];
-        visited = new boolean[N][N];
 
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
@@ -39,7 +37,7 @@ public class Solution {
         ans = 0; // 초기화
     }
 
-    static void selectPlace(int depth, int r, int c, int total, boolean visited[][]) {
+    static void selectPlace(int depth, int r, int c, int total) {
         if (depth == 2) {
             ans = Math.max(total, ans);
             return;
@@ -50,22 +48,18 @@ public class Solution {
         if (check(r, c)) {  // 현재 칸을 선택할 수 있는 경우
             int list[] = new int[M];
 
-            for (int m = 0; m < M; m++) { // 현재 칸을 선택하는 경우
+            for (int m = 0; m < M; m++)  // 현재 칸을 선택하는 경우
                 list[m] = map[r][c + m];
-                visited[r][c + m] = true;
-            }
             selectHoney(0, 0, 0, list); // set max
-            selectPlace(depth + 1, r, c + M, total + max, visited);
+            selectPlace(depth + 1, r, c + M, total + max);
 
-            for (int m = 0; m < M; m++)  // 현재 칸을 선택하지 않는 경우 (visited rollback)
-                visited[r][c + m] = false;
-            selectPlace(depth, r, c + 1, total, visited);
+            selectPlace(depth, r, c + 1, total); // 현재 칸을 선택하지 않는 경우
 
         } else { // 현재 칸을 선택할 수 없는 경우
             if (r == N - 1)  // 끝까지 탐색 완료
                 return;
 
-            selectPlace(depth, r + 1, 0, total, visited);
+            selectPlace(depth, r + 1, 0, total);
         }
     }
 
