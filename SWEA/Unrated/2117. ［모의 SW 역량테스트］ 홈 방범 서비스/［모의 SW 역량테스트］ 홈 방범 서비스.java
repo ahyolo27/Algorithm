@@ -1,22 +1,30 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Solution {
-    static int T, N, M, map[][], home, max;
+    static int T, N, M, homeMax;
+    static List<Home> homes = new ArrayList<>();
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+    static class Home {
+        int r, c;
+
+        Home(int r, int c) {
+            this.r = r;
+            this.c = c;
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         StringBuilder sb = new StringBuilder();
-
         T = Integer.parseInt(br.readLine());
         for (int t = 1; t <= T; t++) {
-
             input(); // 입력
-            setService(); // 서비스 설치
 
-            sb.append("#").append(t).append(" ").append(max).append("\n");
+            findMax(); // 시뮬레이션 시작
+
+            sb.append("#").append(t).append(" ").append(homeMax).append("\n");
         }
-
         System.out.println(sb);
     }
 
@@ -25,55 +33,48 @@ public class Solution {
 
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
-        map = new int[N][N];
-        max = 0; // 초기화
-        home = 0;
+        homes.clear();
 
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            for (int j = 0; j < N; j++) {
-                map[i][j] = Integer.parseInt(st.nextToken());
-                if (map[i][j] == 1)
-                    home++;
-            }
+            for (int j = 0; j < N; j++)
+                if (Integer.parseInt(st.nextToken()) == 1)
+                    homes.add(new Home(i, j));
         }
     }
 
-    static void setService() {
+    static void findMax() {
+        homeMax = 0; // 초기화
         int k = 1;
         int cost = 1;
 
         while (true) {
+            cost = k * k + (k - 1) * (k - 1);
+
             for (int i = 0; i < N; i++) {
                 for (int j = 0; j < N; j++) {
                     int cnt = countHome(i, j, k);
+                    int profit = cnt * M - cost; // 이익 = 수익 - 운영비용
 
-                    int benefit = cnt * M - cost;
-                    if (benefit >= 0)  // 손해가 아니면
-                        max = Math.max(cnt, max); // 집의 개수 갱신
+                    if (profit >= 0) // 손해가 아닌 경우
+                        homeMax = Math.max(cnt, homeMax);
 
-                    if (home == cnt) // 모든 집을 다 본 경우
+                    if (homes.size() == cnt) // 모든 집을 다 본 경우 종료
                         return;
                 }
             }
-
-            k++; // 값 갱신
-            cost = k * k + (k - 1) * (k - 1);
+            k++; // 갱신
         }
     }
 
     static int countHome(int r, int c, int k) {
         int cnt = 0;
 
-        for (int i = r - k + 1; i <= r + k - 1; i++)
-            for (int j = c - k + 1; j <= c + k - 1; j++)
-                if (check(i, j) && map[i][j] == 1 && Math.abs(r - i) + Math.abs(c - j) < k)  // 서비스 범위 안에 있으면
-                    cnt++;
+        for (Home home : homes) {
+            if (r - k < home.r && home.r < r + k && c - k < home.c && home.c < c + k)
+                if (Math.abs(r - home.r) + Math.abs(c - home.c) < k) cnt++;
+        }
 
         return cnt;
-    }
-
-    static boolean check(int r, int c) {
-        return 0 <= r && r < N && 0 <= c && c < N;
     }
 }
