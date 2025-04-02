@@ -65,9 +65,9 @@ public class Main {
         while (!pq.isEmpty()) {
             Node node = pq.poll();
 
-            for (int i = 0; i < graph[node.u].size(); i++) {
-                Node next = graph[node.u].get(i);
+            if (node.s > weight[node.u]) continue; // 현재 노드의 가중치가 갱신된 값보다 크다면 무시
 
+            for (Node next : graph[node.u]) {
                 if (weight[next.u] > node.s + next.s) {
                     weight[next.u] = node.s + next.s;
                     pq.offer(new Node(next.u, weight[next.u]));
@@ -81,9 +81,7 @@ public class Main {
         int max = 0;
 
         for (int i = 1; i <= N; i++) {
-            if (weight[i] == INF)
-                weight[i] = 0;
-            else {
+            if (weight[i] != INF) {
                 cnt++;
                 max = Math.max(weight[i], max);
             }
