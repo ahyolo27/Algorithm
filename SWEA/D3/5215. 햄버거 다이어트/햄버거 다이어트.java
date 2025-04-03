@@ -1,79 +1,68 @@
-import java.util.*;
 import java.io.*;
+import java.util.*;
 
 public class Solution {
-    static int TC, N, L, T[], K[], max;
+    static int T, N, L, ans;
+    static List<Ingredient> list = new ArrayList<>();
     static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
-    public static void main(String[] args) throws IOException {
-        TC = Integer.parseInt(br.readLine());
+    static class Ingredient {
+        int calorie, taste;
 
-        for (int tc = 1; tc <= TC; tc++) {
+        Ingredient(int calorie, int taste) {
+            this.calorie = calorie;
+            this.taste = taste;
+        }
+    }
+
+    public static void main(String[] args) throws IOException {
+        StringBuilder sb = new StringBuilder();
+
+        T = Integer.parseInt(br.readLine());
+        for (int t = 1; t <= T; t++) {
 
             input(); // 입력
-            makeHamburger();
+            getMaxScore(); // 가장 높은 햄버거 점수 찾기
 
-            System.out.println("#" + tc + " " + max);
+            sb.append("#").append(t).append(" ").append(ans).append("\n");
         }
+        System.out.println(sb);
     }
 
     static void input() throws IOException {
         StringTokenizer st = new StringTokenizer(br.readLine());
 
         N = Integer.parseInt(st.nextToken());
-        L = Integer.parseInt(st.nextToken());
-        T = new int[N];
-        K = new int[N];
-        max = 0;
+        L = Integer.parseInt(st.nextToken()); // 제한 칼로리
+
+        ans = 0; // 초기화
+        list.clear();
 
         for (int i = 0; i < N; i++) {
             st = new StringTokenizer(br.readLine());
-            T[i] = Integer.parseInt(st.nextToken());
-            K[i] = Integer.parseInt(st.nextToken());
+            int t = Integer.parseInt(st.nextToken());
+            int c = Integer.parseInt(st.nextToken());
+            list.add(new Ingredient(c, t));
         }
     }
 
-    static void makeHamburger() {
-        int selection[] = new int[N];
+    static void getMaxScore() {
+        int dp[] = new int[L + 1];
+        Arrays.fill(dp, -1);
 
-        for (int r = 1; r <= N; r++) {
-            Arrays.fill(selection, 0);
-            for (int i = N - r; i < N; i++)
-                selection[i] = 1;
-            do {
-                int sumT = 0;
-                int sumK = 0;
-                for (int i = 0; i < N; i++) {
-                    if (selection[i] == 1) {
-                        sumT += T[i];
-                        sumK += K[i];
-                    }
-                }
-                if (sumK <= L)
-                    max = Math.max(max, sumT);
-            } while (nextPermutation(selection));
+        dp[0] = 0;
+        dp[list.get(0).calorie] = list.get(0).taste;
+
+        for (int i = 1; i < N; i++) {
+            int nowCal = list.get(i).calorie;
+            int nowTaste = list.get(i).taste;
+
+            for (int j = L; j >= nowCal; j--)
+                dp[j] = Math.max(dp[j], dp[j - nowCal] + nowTaste);
         }
-    }
 
-    static boolean nextPermutation(int arr[]) {
-        int i = arr.length - 1;
-        while (i > 0 && arr[i - 1] >= arr[i]) i--;
-        if (i == 0) return false;
-
-        int j = arr.length - 1;
-        while (arr[i - 1] >= arr[j]) j--;
-
-        swap(arr, i - 1, j);
-
-        int k = arr.length - 1;
-        while (i < k) swap(arr, i++, k--);
-
-        return true;
-    }
-
-    static void swap(int arr[], int a, int b) {
-        int tmp = arr[a];
-        arr[a] = arr[b];
-        arr[b] = tmp;
+        for (int taste : dp)
+            if (taste != -1)
+                ans = Math.max(taste, ans);
     }
 }
