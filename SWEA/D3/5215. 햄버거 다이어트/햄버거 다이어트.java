@@ -58,7 +58,8 @@ public class Solution {
             int nowTaste = list.get(i).taste;
 
             for (int j = L; j >= nowCal; j--)
-                dp[j] = Math.max(dp[j], dp[j - nowCal] + nowTaste);
+                if (dp[j - nowCal] != -1)
+                    dp[j] = Math.max(dp[j], dp[j - nowCal] + nowTaste);
         }
 
         for (int taste : dp)
