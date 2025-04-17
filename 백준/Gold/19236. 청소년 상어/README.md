@@ -44,13 +44,13 @@
 
 <p>2번 물고기의 방향은 ←인데, 그 방향에는 상어가 있으니 이동할 수 없다. 방향을 45도 반시계 회전을 하면 ↙가 되고, 이 칸에는 3번 물고기가 있다. 물고기가 있는 칸이니 서로 위치를 바꾸고, <그림 4>와 같아지게 된다.</p>
 
-<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/7be317c7-b8b5-4b83-becb-ffd8550311fb/-/preview/" style="width: 327px; height: 329px;"></p>
+<p style="text-align: center;"><img alt="" src="" style="width: 327px; height: 329px;"></p>
 
 <p style="text-align: center;"><그림 4></p>
 
 <p>3번 물고기의 방향은 ↑이고, 존재하지 않는 칸이다. 45도 반시계 회전을 한 방향 ↖도 존재하지 않으니, 다시 회전을 한다. ← 방향에는 상어가 있으니 또 회전을 해야 한다. ↙ 방향에는 2번 물고기가 있으니 서로의 위치를 교환하면 된다. 이런 식으로 모든 물고기가 이동하면 <그림 5>와 같아진다.</p>
 
-<p style="text-align: center;"><img alt="" src="https://upload.acmicpc.net/a58fbda0-bb64-4773-b5f9-2da0bd3f0fd2/-/preview/" style="width: 330px; height: 329px;"></p>
+<p style="text-align: center;"><img alt="" src="" style="width: 330px; height: 329px;"></p>
 
 <p style="text-align: center;"><그림 5></p>
 
