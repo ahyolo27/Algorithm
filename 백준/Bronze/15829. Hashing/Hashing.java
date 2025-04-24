@@ -14,10 +14,12 @@ public class Main {
         final int M = 1234567891;
 
         // Calc
-        int hash = 0;
-        for (int i = 0; i < L; i++)
-            hash += (c[i] - 96) * (int) Math.pow(R, i);
-        hash %= M;
+        long hash = 0;
+        long pow = 1;
+        for (int i = 0; i < L; i++) {
+            hash = (hash + (c[i] - 'a' + 1) * pow) % M;
+            pow = (pow * R) % M;
+        }
         System.out.println(hash);
     }
 }
