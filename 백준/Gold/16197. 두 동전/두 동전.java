@@ -98,10 +98,6 @@ public class Main {
                             visited[p1.r][p1.c][nr2][nc2] = true;
                             q1.offer(new Pos(p1.r, p1.c));
                             q2.offer(new Pos(nr2, nc2));
-                        } else {
-                            visited[p1.r][p1.c][p2.r][p2.c] = true;
-                            q1.offer(new Pos(p1.r, p1.c));
-                            q2.offer(new Pos(p2.r, p2.c));
                         }
 
                     } else if ((!isValid(nr1, nc1) && isValid(nr2, nc2)) || (isValid(nr1, nc1) && !isValid(nr2, nc2))) { // 하나만 떨어지는 경우
