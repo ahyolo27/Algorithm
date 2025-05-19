@@ -26,8 +26,6 @@ public class Main {
 
     static void calc() {
         int sum = 0;
-        int max = -4001;
-        int min = 4001;
         HashMap<Integer, Integer> hashMap = new HashMap<>();
         for (int i = 0; i < N; i++) {
             if (hashMap.containsKey(nums[i]))
@@ -35,25 +33,25 @@ public class Main {
             else
                 hashMap.put(nums[i], 1);
             sum += nums[i];
-            max = Math.max(nums[i], max);
-            min = Math.min(nums[i], min);
         }
 
+        List<Integer> modeCandidates = new ArrayList<>();
         int cntMax = 0;
-        TreeSet<Integer> list = new TreeSet<>();
-        for (int key : hashMap.keySet())
-            if (hashMap.get(key) > cntMax)
-                cntMax = hashMap.get(key);
+        for (Map.Entry<Integer, Integer> entry : hashMap.entrySet()) {
+            int num = entry.getKey(), freq = entry.getValue();
+            if (freq > cntMax) {
+                cntMax = freq;
+                modeCandidates.clear();
+                modeCandidates.add(num);
+            } else if (freq == cntMax) {
+                modeCandidates.add(num);
+            }
+        }
+        Collections.sort(modeCandidates);
 
-        for (int key : hashMap.keySet())
-            if (hashMap.get(key) == cntMax)
-                list.add(key);
-        if (list.size() >= 2)
-            list.remove(list.first());
-
-        sb.append((int) Math.round((double) sum / nums.length)).append("\n");
-        sb.append(nums[nums.length / 2]).append("\n");
-        sb.append(list.first()).append("\n");
-        sb.append(max - min).append("\n");
+        sb.append((int) Math.round(sum / (double) N)).append("\n");
+        sb.append(nums[N / 2]).append("\n");
+        sb.append(modeCandidates.size() >= 2 ? modeCandidates.get(1) : modeCandidates.get(0)).append("\n");
+        sb.append(nums[N - 1] - nums[0]).append("\n");
     }
 }
