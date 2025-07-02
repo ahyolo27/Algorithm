@@ -5,7 +5,7 @@ public class Main {
     static int R, C, maxTime;
     static char map[][];
     static int dr[] = {-1, 0, 1, 0}, dc[] = {0, 1, 0, -1};
-    static Queue<Pos> q = new LinkedList<>();
+    static Deque<Pos> q = new ArrayDeque<>();
     static boolean visited[][];
 
     static class Pos {
@@ -21,12 +21,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
 
         input(); // 입력
-
-        for (int i = 0; i < R; i++) {
-            for (int j = 0; j < C; j++)
-                if (map[i][j] == 'L')
-                    simulate(i, j);
-        }
+        setStartPoints();
 
         System.out.println(maxTime);
     }
@@ -48,6 +43,18 @@ public class Main {
         visited = new boolean[R][C];
     }
 
+    static void setStartPoints() {
+        List<Pos> startPoints = new ArrayList<>();
+        for (int i = 0; i < R; i++) {
+            for (int j = 0; j < C; j++)
+                if (map[i][j] == 'L' && isShore(i, j))
+                    startPoints.add(new Pos(i, j, 0));
+        }
+
+        for (Pos s : startPoints)
+            simulate(s.r, s.c);
+    }
+
     static void simulate(int r, int c) {
         int time = 0;
 
@@ -56,8 +63,7 @@ public class Main {
 
         while (!q.isEmpty()) {
             Pos p = q.poll();
-
-            maxTime = Math.max(p.time, maxTime);
+            time = p.time;
 
             for (int i = 0; i < 4; i++) {
                 int nr = p.r + dr[i];
@@ -70,11 +76,23 @@ public class Main {
             }
         }
 
+        maxTime = Math.max(maxTime, time);
+
         for (int i = 0; i < R; i++)
-            Arrays.fill(visited[i], false); // 초기화
+            Arrays.fill(visited[i], false);
     }
 
-    static boolean isValid(int r, int c) {
+    static boolean isShore(int r, int c) { // startPoint로 사용할 수 있는 값인지 확인
+        for (int i = 0; i < 4; i++) {
+            int nr = r + dr[i];
+            int nc = c + dc[i];
+            if (!isValid(nr, nc) || map[nr][nc] == 'W') // 맵의 경계에 있거나 물에 인접한 경우
+                return true;
+        }
+        return false;
+    }
+
+    static boolean isValid(int r, int c) { // 지도의 경계를 벗어나면 false
         return 0 <= r && r < R && 0 <= c && c < C;
     }
 }
