@@ -20,31 +20,25 @@ public class Main {
 
         N = Integer.parseInt(br.readLine());
         numbers = new int[N];
-        ans = new int[N];
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < N; i++)
             numbers[i] = Integer.parseInt(st.nextToken());
+
+        ans = new int[N];
+        Arrays.fill(ans, -1);
     }
 
     static void getNGE() {
-        Stack<Integer> stack = new Stack<>();
+        Deque<Integer> stack = new ArrayDeque<>();
 
         for (int i = numbers.length - 1; i >= 0; i--) {
-            while (!stack.isEmpty()) {
-                int n = stack.peek();
-                if (numbers[i] >= n)
-                    stack.pop();
-                else {
-                    ans[i] = n;
-                    stack.push(numbers[i]);
-                    break;
-                }
+            while (!stack.isEmpty() && numbers[i] >= stack.peek()) {
+                stack.pop();
             }
-            if (stack.isEmpty()) {
-                ans[i] = -1;
-                stack.push(numbers[i]);
-            }
+            if (!stack.isEmpty())
+                ans[i] = stack.peek();
+            stack.push(numbers[i]);
         }
     }
 }
