@@ -4,22 +4,10 @@ import java.io.*;
 public class Main {
     static int N, M, cnt;
     static char map[][];
-    static int dr[] = {-1, 0, 1, 0}, dc[] = {0, 1, 0, -1}; // 홀수: 가로 | 짝수: 세로
-    static Queue<Pos> q = new LinkedList<>();
-    static boolean visited[][];
-
-    static class Pos {
-        int r, c;
-
-        Pos(int r, int c) {
-            this.r = r;
-            this.c = c;
-        }
-    }
 
     public static void main(String[] args) throws IOException {
         input(); // 입력
-        move(); // 이동+탐색
+        find(); // 바닥의 시작점 찾기
 
         System.out.println(cnt);
     }
@@ -39,63 +27,19 @@ public class Main {
         }
 
         cnt = 0; // 초기화
-        visited = new boolean[N][M];
     }
 
-    static void move() {
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < M; j++)
-                if (!visited[i][j])
-                    bfs(i, j);
-    }
-
-    static void bfs(int r, int c) {
-        q.clear();
-
-        if (map[r][c] == '-') {
-            q.add(new Pos(r, c));
-            visited[r][c] = true;
-
-            while (!q.isEmpty()) {
-                Pos p = q.poll();
-
-                for (int i = 1; i < 4; i += 2) {
-                    int nr = p.r + dr[i];
-                    int nc = p.c + dc[i];
-
-                    if (!isValid(nr, nc) || visited[nr][nc]) continue; // 범위 밖 값
-
-                    if (map[nr][nc] == '-') { // 같은 판자만 확인
-                        visited[nr][nc] = true;
-                        q.add(new Pos(nr, nc));
-                    }
-                }
-            }
-        } else if (map[r][c] == '|') {
-            q.add(new Pos(r, c));
-            visited[r][c] = true;
-
-            while (!q.isEmpty()) {
-                Pos p = q.poll();
-
-                for (int i = 0; i < 4; i += 2) {
-                    int nr = p.r + dr[i];
-                    int nc = p.c + dc[i];
-
-                    if (!isValid(nr, nc) || visited[nr][nc]) continue; // 범위 밖 값
-
-                    if (map[nr][nc] == '|') { // 같은 판자만 확인
-                        visited[nr][nc] = true;
-                        q.add(new Pos(nr, nc));
-                    }
+    static void find() { 
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < M; j++) {
+                if (map[i][j] == '-') {
+                    if (j == 0 || map[i][j - 1] != '-')
+                        cnt++;
+                } else {
+                    if (i == 0 || map[i - 1][j] != '|')
+                        cnt++;
                 }
             }
         }
-
-        cnt++;
-    }
-
-    static boolean isValid(int r, int c) {
-        return 0 <= r && r < N && 0 <= c && c < M;
     }
 }
