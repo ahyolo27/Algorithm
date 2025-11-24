@@ -1,8 +1,7 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
 
 public class Main {
     static String S, T;
@@ -24,21 +23,15 @@ public class Main {
     }
 
     static void calc() {
-        if (S.length() == 1) {
-            if (S.equals(T)) answer = 1;
-            else answer = 0;
-            return;
-        }
-
-        Map<Character, Integer> map = new HashMap<>();
+        int pos[] = new int[26];
+        Arrays.fill(pos, -1);
         for (int i = 0; i < T.length(); i++)
-            map.put(T.charAt(i), i);
+            pos[T.charAt(i) - 'a'] = i;
 
         int dp[] = new int[T.length()];
 
         for (int i = 0; i < S.length(); i++) {
-            char c = S.charAt(i);
-            int idx = map.getOrDefault(c, -1);
+            int idx = pos[S.charAt(i) - 'a'];
 
             if (idx == -1) continue; // T에 해당하는 문자가 아닌 경우
 
