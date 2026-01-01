@@ -18,17 +18,25 @@ public class Main {
         StringBuilder sb = new StringBuilder();
 
         int N = Integer.parseInt(br.readLine());
+        int sum = 0;
 
         PriorityQueue<Problem> problems = new PriorityQueue<>((o1, o2) -> o2.s - o1.s);
-        List<Integer> ac = new ArrayList<>();
+        Queue<Integer> ac = new LinkedList<>();
 
         for (int i = 1; i <= N; i++) {
             int s = Integer.parseInt(br.readLine());
+
+            sum += s;
 
             if (s == 0)
                 ac.add(i);
             else
                 problems.add(new Problem(i, s));
+        }
+
+        if (sum != N - 1) { // 답을 만들수가 없는 경우
+            System.out.println(-1);
+            return;
         }
 
         for (int i = 0; i < N; i++) {
@@ -37,8 +45,7 @@ public class Main {
                 return;
             }
 
-            int p = ac.get(0);
-            ac.remove((Integer) p);
+            int p = ac.poll();
             sb.append(p).append("\n");
 
             if (i == N - 1) break;// 종료
