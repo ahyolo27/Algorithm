@@ -57,44 +57,23 @@ public class Main {
             if (in[now.idx].isEmpty())  // 선행 작업이 없는 작업
                 finished[now.idx] = true;
 
-            if (out[now.idx].isEmpty()) { // 마지막 작업
-                boolean isFinished = true;
-                int max = weight[now.idx];
-                for (int before : in[now.idx]) {
-                    if (!finished[before]) {
-                        isFinished = false;
-                        break;
-                    }
-                    max = Math.max(max, weight[before] + now.w);
+            boolean isFinished = true;
+            int max = weight[now.idx];
+            for (int before : in[now.idx]) {
+                if (!finished[before]) {
+                    isFinished = false;
+                    break;
                 }
-                if (isFinished) {
-                    weight[now.idx] = max;
-                    finished[now.idx] = true;
-                }
-            } else { // 이어진 작업들에 대해 갱신
-                for (int next : out[now.idx]) {
-                    boolean isFinished = true;
-                    int max = weight[now.idx];
-
-                    for (int before : in[now.idx]) {
-                        if (!finished[before]) {
-                            isFinished = false;
-                            break;
-                        }
-                        max = Math.max(max, weight[before] + now.w);
-                    }
-
-                    if (isFinished) {
-                        weight[now.idx] = max;
-                        finished[now.idx] = true;
-                    }
-                }
+                max = Math.max(max, weight[before] + now.w);
             }
-
+            if (isFinished) {
+                weight[now.idx] = max;
+                finished[now.idx] = true;
+            }
             if (!finished[now.idx])
                 q.add(now);
         }
-
+        
         // output
         int max = 0;
         for (int w : weight)
