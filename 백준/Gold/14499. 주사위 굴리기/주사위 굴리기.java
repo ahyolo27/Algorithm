@@ -4,9 +4,8 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static int N, M, r, c, map[][], dice[];
+    static int N, M, r, c, map[][], commands[], dice[];
     static int dr[] = {1, 0, 0, -1}, dc[] = {0, 1, -1, 0};
-    static Queue<Integer> q = new LinkedList<>();
     static StringBuilder sb = new StringBuilder();
 
     public static void main(String[] args) throws IOException {
@@ -28,6 +27,7 @@ public class Main {
         int K = Integer.parseInt(st.nextToken());
 
         map = new int[N][M];
+        commands = new int[K];
         dice = new int[6];
 
         for (int i = 0; i < N; i++) {
@@ -38,33 +38,22 @@ public class Main {
 
         st = new StringTokenizer(br.readLine());
         for (int i = 0; i < K; i++)
-            q.add(Integer.parseInt(st.nextToken()));
+            commands[i] = Integer.parseInt(st.nextToken()) % 4;
     }
 
     static void simulate() {
+        for (int command : commands) {
+            int nr = r + dr[command];
+            int nc = c + dc[command];
 
-        while (!q.isEmpty()) {
-            int command = q.poll();
-
-            int dir = command % 4;
-
-            int nr = r + dr[dir];
-            int nc = c + dc[dir];
             if (nr < 0 || N <= nr || nc < 0 || M <= nc) continue; // 명령 수행 X
 
-            // 칸 및 좌표 갱신
-            if (map[r][c] == 0)
-                map[r][c] = dice[5];
-            else {
-                dice[5] = map[r][c];
-                map[r][c] = 0;
-            }
             r = nr;
             c = nc;
 
             // 주사위 갱신
             int tmp = dice[0];
-            switch (dir) {
+            switch (command) {
                 case 0: // 남
                     dice[0] = dice[1];
                     dice[1] = dice[5];
@@ -89,6 +78,14 @@ public class Main {
                     dice[5] = dice[1];
                     dice[1] = tmp;
                     break;
+            }
+
+            // 칸 갱신
+            if (map[r][c] == 0)
+                map[r][c] = dice[5];
+            else {
+                dice[5] = map[r][c];
+                map[r][c] = 0;
             }
 
             sb.append(dice[0]).append("\n");
