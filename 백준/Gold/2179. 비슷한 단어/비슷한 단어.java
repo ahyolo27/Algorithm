@@ -1,84 +1,87 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Main {
+    static int max;
     static String maxPrefix;
-    static List<Word> words;
+    static String words[];
 
-    static class Word {
-        String val;
-        int idx;
+    static class Node {
+        Map<Character, Node> child;
+        boolean isEnd;
 
-        Word(String val, int idx) {
-            this.val = val;
-            this.idx = idx;
+        Node() {
+            this.child = new HashMap<>();
+            this.isEnd = false;
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        input(); // 입력
+    static class Trie {
+        Node root;
 
-        solve(); // LCP 계산
+        Trie() {
+            this.root = new Node();
+        }
 
-        print(); // 출력
+        void insert(String word) {
+            Node node = root;
+
+            int cnt = 0; // 접두사 길이
+            StringBuilder sb = new StringBuilder();
+            String prefix = "";
+
+            for (char c : word.toCharArray()) {
+                if (!node.child.containsKey(c)) { // 존재 X
+                    node.child.put(c, new Node());
+                } else { // 존재 O
+                    cnt++;
+                    sb.append(c);
+                }
+                node = node.child.get(c);
+            }
+
+            node.isEnd = true;
+            if (cnt >= max) {
+                max = cnt;
+                maxPrefix = sb.toString();
+            }
+        }
     }
 
     static void input() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
         int N = Integer.parseInt(br.readLine());
-        words = new ArrayList<>();
+        words = new String[N];
 
         for (int i = 0; i < N; i++) {
             String word = br.readLine();
-            words.add(new Word(word, i));
+            words[i] = word;
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        input(); // 입력
+
+        solve(); // Trie -> 접두사 찾기
     }
 
     static void solve() {
-        words.sort(Comparator.comparing(o -> o.val)); // 단어 기준 사전순
-
-        int maxLen = -1;
-        int maxIdx = words.size();
-        maxPrefix = "";
-
-        for (int i = 0; i < words.size() - 1; i++) {
-            String prefix = lcp(words.get(i).val, words.get(i + 1).val);
-
-            if (prefix.isEmpty()) continue; // 공통 접두사가 없는 경우
-
-            if (prefix.length() > maxLen || (prefix.length() == maxLen && (Math.min(words.get(i).idx, words.get(i + 1).idx) < maxIdx))) {
-                maxLen = prefix.length();
-                maxIdx = Math.min(words.get(i).idx, words.get(i + 1).idx);
-                maxPrefix = prefix;
-            }
-        }
-    }
-
-    static String lcp(String a, String b) {
-        int len = Math.min(a.length(), b.length());
-
-        int i = 0;
-        while (i < len && a.charAt(i) == b.charAt(i)) {
-            i++;
-        }
-
-        return a.substring(0, i);
-    }
-
-    static void print() {
         StringBuilder sb = new StringBuilder();
-        words.sort(Comparator.comparing(o -> o.idx)); // 입력순
+
+        Trie trie = new Trie();
+
+        for (int i = words.length - 1; i >= 0; i--)
+            trie.insert(words[i]);
 
         int cnt = 0;
-        for (Word w : words) {
-            if (w.val.startsWith(maxPrefix)) {
+        for (String word : words) {
+            if (word.startsWith(maxPrefix)) {
                 cnt++;
-                sb.append(w.val).append("\n");
+                sb.append(word).append("\n");
             }
             if (cnt == 2) break;
         }
