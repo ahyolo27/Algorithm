@@ -1,0 +1,45 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+public class Main {
+    public static void main(String[] args) throws IOException {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+
+        String s1 = br.readLine();
+        String s2 = br.readLine();
+
+        int dp[][] = new int[s1.length() + 1][s2.length() + 1];
+
+        for (int i = 1; i < dp.length; i++) {
+            for (int j = 1; j < dp[i].length; j++) {
+                if (s1.charAt(i - 1) == s2.charAt(j - 1))
+                    dp[i][j] = dp[i - 1][j - 1] + 1;
+                else
+                    dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+
+        int now = dp[s1.length()][s2.length()];
+        int i = s1.length();
+        int j = s2.length();
+
+        StringBuilder sb = new StringBuilder();
+        while (now != 0) {
+            if (dp[i - 1][j] == now)
+                i--;
+            else if (dp[i][j - 1] == now)
+                j--;
+            else {
+                sb.append(s1.charAt(i - 1)); // 현재 문자 넣기
+                i--;
+                j--;
+            }
+            now = dp[i][j];
+        }
+
+        System.out.println(dp[s1.length()][s2.length()]);
+        if (dp[s1.length()][s2.length()] != 0)
+            System.out.println(sb.reverse());
+    }
+}
