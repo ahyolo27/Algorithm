@@ -16,16 +16,16 @@ public class Main {
             num[i] = Integer.parseInt(st.nextToken());
 
         // solution
-        int cnt = 0;
+        long sum = 0;
+        long count[] = new long[N];
+
         for (int i = 1; i < N; i++) {
-            if (num[i - 1] > num[i]) {
-                int k = (int) Math.ceil(Math.log((double) num[i - 1] / num[i]) / Math.log(2));
-                cnt += k;
-                num[i] *= (int) Math.pow(2, k);
-            }
+            double ratio = Math.ceil(Math.log((double) num[i - 1] / num[i]) / Math.log(2)) + count[i - 1];
+            count[i] = Math.max(0, (long) ratio);
+            sum += count[i];
         }
 
         // output
-        System.out.println(cnt);
+        System.out.println(sum);
     }
 }
