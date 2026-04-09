@@ -4,96 +4,97 @@ import java.io.InputStreamReader;
 import java.util.*;
 
 public class Main {
-    static class Tree {
-        Node root;
-        Map<String, Node> list;
-
-        Tree() {
-            root = new Node(null);
-            list = new TreeMap<>();
-        }
-
-        class Node {
-            Node parent;
-            TreeSet<Node> children;
-            String name;
-
-            Node(String name) {
-                parent = root;
-                children = new TreeSet<>(Comparator.comparing(o -> o.name));
-                this.name = name;
-            }
-        }
-
-        void addNode(String name) {
-            list.put(name, new Node(name));
-            root.children.add(list.get(name));
-        }
-
-        void makeTree(String childName, String parentName) {
-            Node parent = list.get(parentName);
-            Node child = list.get(childName);
-
-            if (checkParents(childName, parentName)) return; // 이미 완성된 트리인 경우 종료
-
-            // 자식의 부모 -> 자식 제거
-            child.parent.children.remove(child);
-            // 자식의 부모 변경
-            child.parent = parent;
-            // 부모 -> 자식 추가
-            parent.children.add(child);
-        }
-
-        boolean checkParents(String childName, String targetName) { // 부모를 거슬러 올라가며 target이 있으면 true를 반환하는 메서드
-            Node child = list.get(childName);
-            Node parent = child.parent;
-
-            while (parent != root) {
-                if (parent.name.equals(targetName)) return true;
-
-                parent = parent.parent;
-            }
-
-            return false;
-        }
-    }
-
+    static int N, degree[];
+    static String name[];
+    static Map<String, Integer> idx;
+    static List<Integer> graph[];
+    static List<String> roots;
+    static List<Integer> children[];
 
     public static void main(String[] args) throws IOException {
+        input();
+
+        sort(); // 위상정렬로 시조와 부모-자식 관계 정리
+
+        print();
+    }
+
+    static void input() throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st;
 
-        Tree tree = new Tree();
+        N = Integer.parseInt(br.readLine());
 
-        int N = Integer.parseInt(br.readLine());
+        idx = new HashMap<>();
+        degree = new int[N];
+        name = new String[N];
+        graph = new ArrayList[N];
+        for (int i = 0; i < N; i++)
+            graph[i] = new ArrayList<>();
+
         st = new StringTokenizer(br.readLine());
-        for (int i = 0; i < N; i++) {
-            String name = st.nextToken();
-            tree.addNode(name);
-        }
+        for (int i = 0; i < N; i++)
+            name[i] = st.nextToken();
+        Arrays.sort(name); // 이름 정렬 후 인덱스 부여
+
+        for (int i = 0; i < N; i++)
+            idx.put(name[i], i);
 
         int M = Integer.parseInt(br.readLine());
         for (int i = 0; i < M; i++) {
             st = new StringTokenizer(br.readLine());
+            String next = st.nextToken();
+            String prev = st.nextToken();
+            graph[idx.get(prev)].add(idx.get(next)); // 그래프에 간선 추가: prev -> next
+            degree[idx.get(next)]++; // 진입차수 증가
+        }
+    }
 
-            String child = st.nextToken();
-            String parent = st.nextToken();
+    static void sort() {
+        Queue<Integer> q = new LinkedList<>();
 
-            tree.makeTree(child, parent);
+        roots = new ArrayList<>(); // 시조
+        children = new ArrayList[N]; // 부모-자식 트리
+        for (int i = 0; i < N; i++)
+            children[i] = new ArrayList<>();
+
+        for (String name : idx.keySet()) {
+            if (degree[idx.get(name)] == 0) {
+                roots.add(name);
+                q.add(idx.get(name));
+            }
         }
 
-        // output
+        while (!q.isEmpty()) {
+            int now = q.poll();
+
+            for (int next : graph[now]) {
+                degree[next]--;
+
+                if (degree[next] == 0) {
+                    q.add(next);
+                    children[now].add(next);
+                }
+            }
+        }
+    }
+
+    static void print() {
         StringBuilder sb = new StringBuilder();
-        sb.append(tree.root.children.size()).append("\n");
-        for (Tree.Node child : tree.root.children)
-            sb.append(child.name).append(" ");
-        sb.append("\n");
-        for (String name : tree.list.keySet()) {
+
+        sb.append(roots.size()).append("\n");
+        Collections.sort(roots);
+        for (String name : roots)
             sb.append(name).append(" ");
-            sb.append(tree.list.get(name).children.size()).append(" ");
-            if (!tree.list.get(name).children.isEmpty()) {
-                for (Tree.Node child : tree.list.get(name).children)
-                    sb.append(child.name).append(" ");
+        sb.append("\n");
+
+        for (int i = 0; i < N; i++) {
+            sb.append(name[i]).append(" ");
+            sb.append(children[i].size()).append(" ");
+
+            if (!children[i].isEmpty()) {
+                for (int childIdx : children[i])
+                    sb.append(name[childIdx]).append(" ");
             }
             sb.append("\n");
         }
