@@ -93,9 +93,11 @@ public class Main {
             sb.append(children[i].size()).append(" ");
 
             if (!children[i].isEmpty()) {
+                Collections.sort(children[i]);
                 for (int childIdx : children[i])
                     sb.append(name[childIdx]).append(" ");
             }
+
             sb.append("\n");
         }
 
