@@ -12,8 +12,8 @@ public class Main {
 
         int T = Integer.parseInt(br.readLine());
         int cnt;
-
         for (int t = 0; t < T; t++) {
+
             int N = Integer.parseInt(br.readLine());
 
             st = new StringTokenizer(br.readLine());
@@ -23,29 +23,24 @@ public class Main {
             Arrays.sort(arr); // 오름차순 정렬
 
             cnt = 0;
-            int target;
 
-            for (int i = 0; i < N - 2; i++) {
-                for (int j = i + 2; j < N; j++) {
-                    if ((arr[i] + arr[j]) % 2 != 0) continue; // 값을 찾을 수 없는 경우
+            // 투포인터
+            for (int k = 1; k < N - 1; k++) {
+                int left = k - 1;
+                int right = k + 1;
 
-                    target = (arr[i] + arr[j]) / 2;
+                while (left >= 0 && right < N) {
+                    int sum = arr[left] + arr[right];
+                    int target = 2 * arr[k];
 
-                    // 이분탐색
-                    int left = i + 1;
-                    int right = j - 1;
-                    while (left <= right) {
-                        int mid = (left + right) / 2;
-                        if (arr[mid] == target) {
-                            cnt++;
-                            break;
-                        }
-
-                        if (arr[mid] < target)
-                            left = mid + 1;
-                        else
-                            right = mid - 1;
-                    }
+                    if (sum == target) {
+                        cnt++;
+                        left--;
+                        right++;
+                    } else if (sum < target)
+                        right++;
+                    else
+                        left--;
                 }
             }
 
