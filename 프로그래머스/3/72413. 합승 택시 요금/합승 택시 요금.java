@@ -2,29 +2,32 @@ import java.util.*;
 
 class Solution {
     public int solution(int n, int s, int a, int b, int[][] fares) {
-        int answer = Integer.MAX_VALUE;
+        final int INF = Integer.MAX_VALUE;
+        int answer = INF;
 
         // 간선 만들기
-        int map[][] = new int[n + 1][n + 1];
-        for (int m[] : map)
-            Arrays.fill(m, Integer.MAX_VALUE);
+        ArrayList<Node> graph[] = new ArrayList[n + 1];
+        for (int i = 1; i <= n; i++)
+            graph[i] = new ArrayList<>();
         for (int fare[] : fares) {
-            map[fare[0]][fare[1]] = fare[2];
-            map[fare[1]][fare[0]] = fare[2];
+            graph[fare[0]].add(new Node(fare[1], fare[2]));
+            graph[fare[1]].add(new Node(fare[0], fare[2]));
         }
 
         // 다익스트라
-        int distS[] = dijkstra(s, n, map);
-        int distA[] = dijkstra(a, n, map);
-        int distB[] = dijkstra(b, n, map);
+        int distS[] = dijkstra(s, n, graph);
+        int distA[] = dijkstra(a, n, graph);
+        int distB[] = dijkstra(b, n, graph);
 
-        for (int k = 1; k <= n; k++)
+        for (int k = 1; k <= n; k++) {
+            if (distS[k] == INF || distA[k] == INF || distB[k] == INF) continue;
             answer = Math.min(answer, distS[k] + distA[k] + distB[k]); // s->k, k->a, k->b
+        }
 
         return answer;
     }
 
-    int[] dijkstra(int start, int nodeCnt, int map[][]) {
+    int[] dijkstra(int start, int nodeCnt, ArrayList<Node> graph[]) {
         int weight[] = new int[nodeCnt + 1];
         Arrays.fill(weight, Integer.MAX_VALUE);
 
@@ -37,12 +40,10 @@ class Solution {
 
             if (now.w > weight[now.idx]) continue; // 갱신 필요 X
 
-            for (int next = 1; next <= nodeCnt; next++) {
-                if (map[now.idx][next] == Integer.MAX_VALUE) continue;
-
-                if (weight[next] > weight[now.idx] + map[now.idx][next]) {
-                    weight[next] = weight[now.idx] + map[now.idx][next];
-                    pq.add(new Node(next, weight[next]));
+            for (Node next : graph[now.idx]) {
+                if (weight[next.idx] > weight[now.idx] + next.w) {
+                    weight[next.idx] = weight[now.idx] + next.w;
+                    pq.add(new Node(next.idx, weight[next.idx]));
                 }
             }
         }
