@@ -10,14 +10,15 @@ class Solution {
         while(left<right) {
             int mid = (left+right)/2;
             
-            if (citations[mid] >= citations.length-mid) {
-                answer = citations.length-mid;
+            if (citations[mid] >= citations.length-mid) 
                 right = mid;
-            }
-            else if (citations[mid] < (citations.length-mid))
+            else
                 left = mid+1;
         } 
         
-        return answer;
+        if (citations[left] >= citations.length - left)
+            return citations.length - left;
+        else
+            return citations.length -left - 1;
     }
 }
