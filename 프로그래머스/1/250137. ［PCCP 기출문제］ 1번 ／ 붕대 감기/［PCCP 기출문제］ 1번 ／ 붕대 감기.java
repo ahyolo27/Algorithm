@@ -33,7 +33,7 @@ class Solution {
             HP -= attack[1];
             if (HP <= 0) return -1; // 체력이 0 되면 바로 게임 종료
             startTime = attack[0]+1; // 다음 힐 시작 시간
-            endTime = startTime + continuousTime;
+            endTime = startTime + continuousTime-1;
         }
         
         return HP;
