@@ -1,17 +1,17 @@
 import java.util.*;
 
 class Solution {
-    public int solution(int alp, int cop, int[][] problems) {       
-        int dp[][] = new int[151][151]; // dp[알고력][코딩력]=시간
-        for(int d[]:dp)
-            Arrays.fill(d, Integer.MAX_VALUE);
-        
+    public int solution(int alp, int cop, int[][] problems) {              
         int maxAlp = 0;
         int maxCop = 0;
         for(int problem[]: problems) {
             maxAlp = Math.max(maxAlp, problem[0]);
             maxCop = Math.max(maxCop, problem[1]);
         }
+        
+        int dp[][] = new int[maxAlp+1][maxCop+1]; // dp[알고력][코딩력]=시간
+        for(int d[]:dp)
+            Arrays.fill(d, Integer.MAX_VALUE);
 
         // solution 
     
