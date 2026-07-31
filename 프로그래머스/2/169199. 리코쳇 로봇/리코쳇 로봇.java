@@ -21,7 +21,7 @@ class Solution {
         
         int dr[] = {-1,0,1,0}, dc[] = {0,1,0,-1};
         
-        Queue<Pos> q = new LinkedList<>();
+        Queue<Pos> q = new ArrayDeque<>();
         boolean visited[][] = new boolean[map.length][map[0].length];
         q.add(start);
         visited[start.r][start.c] = true;
@@ -35,25 +35,22 @@ class Solution {
                 
                 if (nr<0 || nc<0 || nr>=map.length || nc>=map[0].length) continue; // 범위를 벗어나는 경우
                 
-                if (map[nr][nc]) { // 갈 수 있는 방향이면 쭉 직진
-                    while(true) {
-                        nr+=dr[i];
-                        nc+=dc[i];
-                        if((nr<0 || nc<0 || nr>=map.length || nc>=map[0].length) || !map[nr][nc]){
-                            nr-=dr[i];
-                            nc-=dc[i];
-                            break;
-                        }
+                while(true) {
+                    if((nr<0 || nc<0 || nr>=map.length || nc>=map[0].length) || !map[nr][nc]){
+                        nr-=dr[i];
+                        nc-=dc[i];
+                        break;
                     }
-                    if(!visited[nr][nc]) { // 멈춘 곳이 방문하지 않은 곳이면 저장
-                        if (nr == goal.r && nc == goal.c) return p.cnt+1; // 도착점에 도착한 경우
-                        visited[nr][nc] = true;
-                        q.add(new Pos(nr, nc, p.cnt+1));
-                    }
+                    nr+=dr[i];
+                    nc+=dc[i];
                 }
+                
+                if(!visited[nr][nc]) { // 멈춘 곳이 방문하지 않은 곳이면 저장
+                    if (nr == goal.r && nc == goal.c) return p.cnt+1; // 도착점에 도착한 경우
+                    visited[nr][nc] = true;
+                    q.add(new Pos(nr, nc, p.cnt+1));
+                }   
             }
-            
-            
         }
         
         return -1; // 도달 불가능한 경우
